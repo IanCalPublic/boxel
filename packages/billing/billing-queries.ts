@@ -59,6 +59,14 @@ export interface LedgerEntry {
   subscriptionCycleId: string | null;
 }
 
+export interface ProxyCall {
+  id: string;
+  userId: string;
+  url: string;
+  creditsSpent: number;
+  createdAt: number;
+}
+
 function planRowToPlan(row: Record<string, PgPrimitive>): Plan {
   return {
     id: row.id,
@@ -560,4 +568,28 @@ export async function spendCredits(
       });
     }
   }
+}
+
+export async function insertProxyCall(
+  dbAdapter: DBAdapter,
+  params: { userId: string; url: string; creditsSpent: number },
+): Promise<ProxyCall> {
+  let { valueExpressions, nameExpressions } = asExpressions({
+    user_id: params.userId,
+    url: params.url,
+    credits_spent: params.creditsSpent,
+  });
+
+  let result = await query(
+    dbAdapter,
+    insert('api_proxy_calls', nameExpressions, valueExpressions),
+  );
+
+  return {
+    id: result[0].id,
+    userId: result[0].user_id,
+    url: result[0].url,
+    creditsSpent: result[0].credits_spent,
+    createdAt: result[0].created_at,
+  } as ProxyCall;
 }
