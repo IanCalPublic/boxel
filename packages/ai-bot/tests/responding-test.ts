@@ -7,8 +7,11 @@ import { CommandRequest } from '@cardstack/runtime-common/commands';
 import {
   APP_BOXEL_REASONING_CONTENT_KEY,
   APP_BOXEL_COMMAND_REQUESTS_KEY,
+  APP_BOXEL_COMMAND_RESULT_EVENT_TYPE,
+  APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE,
 } from '@cardstack/runtime-common/matrix-constants';
 import type OpenAI from 'openai';
+import { MatrixEvent } from 'matrix-js-sdk';
 import { FakeMatrixClient } from './helpers/fake-matrix-client';
 
 function snapshotWithContent(content: string): ChatCompletionSnapshot {
@@ -100,6 +103,20 @@ module('Responding', (hooks) => {
     clock.uninstall();
     responder.finalize();
     fakeMatrixClient.resetSentEvents();
+  });
+
+  test('eventMayTriggerResponse returns true for command result without output', () => {
+    let event = new MatrixEvent({
+      type: APP_BOXEL_COMMAND_RESULT_EVENT_TYPE,
+      content: {
+        msgtype: APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE,
+      },
+    } as any);
+
+    assert.true(
+      Responder.eventMayTriggerResponse(event),
+      'Command result with no output should trigger a response',
+    );
   });
 
   test('Sends thinking message', async () => {
