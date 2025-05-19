@@ -227,9 +227,17 @@ export default class RealmServerService extends Service {
 
     let realmServerEvent = JSON.parse(event.content.body) as RealmServerEvent;
     let subscribers = this.eventSubscribers.get(realmServerEvent.eventType);
-    subscribers?.forEach(async (subscriber) => {
-      await subscriber(realmServerEvent.data);
-    });
+    if (subscribers) {
+      await Promise.all(
+        [...subscribers].map(async (subscriber) => {
+          try {
+            await subscriber(realmServerEvent.data);
+          } catch (err) {
+            console.error('Error while notifying realm server subscriber', err);
+          }
+        }),
+      );
+    }
   }
 
   subscribeEvent(eventType: string, subscriber: RealmServerEventSubscriber) {
