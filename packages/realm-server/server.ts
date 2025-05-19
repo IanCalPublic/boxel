@@ -238,7 +238,7 @@ export class RealmServer {
       // This is optimized for production, in that we won't be changing index
       // HTML after we start. However, in development this might be annoying
       // because it means restarting the realm server to pick up ember-cli
-      // rebuilds in the case where you want to test with the the realm server
+      // rebuilds in the case where you want to test with the realm server
       // specifically and not ember cli hosted app.
       return this.promiseForIndexHTML;
     }

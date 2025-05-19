@@ -191,7 +191,7 @@ export function getContainsManyComponent({
   let getComponents = () =>
     arrayField.children.map((child) =>
       getBoxComponent(cardTypeFor(field, child), child, field),
-    ); // Wrap the the components in a function so that the template is reactive to changes in the model (this is essentially a helper)
+    ); // Wrap the components in a function so that the template is reactive to changes in the model (this is essentially a helper)
   let isComputed = !!field.computeVia;
   function shouldRenderEditor(
     format: Format | undefined,
