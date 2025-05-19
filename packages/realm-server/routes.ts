@@ -11,6 +11,7 @@ import Koa from 'koa';
 import handleStripeLinksRequest from './handlers/handle-stripe-links';
 import handleCreateUserRequest from './handlers/handle-create-user';
 import handleQueueStatusRequest from './handlers/handle-queue-status';
+import handleProxyRequest from './handlers/handle-proxy';
 
 export type CreateRoutesArgs = {
   dbAdapter: DBAdapter;
@@ -63,6 +64,11 @@ export function createRoutes(args: CreateRoutesArgs) {
     handleCreateUserRequest(args),
   );
   router.get('/_stripe-links', handleStripeLinksRequest());
+  router.post(
+    '/_proxy',
+    jwtMiddleware(args.realmSecretSeed),
+    handleProxyRequest(args),
+  );
 
   return router.routes();
 }

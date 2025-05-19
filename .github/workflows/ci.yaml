@@ -266,6 +266,7 @@ jobs:
             "search-prerendered-test.ts",
             "types-endpoint-test.ts",
             "server-endpoints-test.ts",
+            "proxy-endpoint-test.ts",
             "virtual-network-test.ts",
           ]
     steps:
