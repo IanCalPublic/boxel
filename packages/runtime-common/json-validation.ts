@@ -9,13 +9,13 @@ export function assertJSONValue(v: any, pointer: string[]) {
       return;
     case 'object':
       if (Array.isArray(v)) {
-        v.every((value, index) =>
-          assertJSONValue(value, pointer.concat(`[${index}]`)),
-        );
+        v.forEach((value, index) => {
+          assertJSONValue(value, pointer.concat(`[${index}]`));
+        });
       } else {
-        Object.entries(v).every(([key, value]) =>
-          assertJSONValue(value, pointer.concat(key)),
-        );
+        Object.entries(v).forEach(([key, value]) => {
+          assertJSONValue(value, pointer.concat(key));
+        });
       }
       return;
   }

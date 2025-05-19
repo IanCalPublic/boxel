@@ -301,9 +301,9 @@ function assertAnyFilter(
       `${pointer.join('/') || '/'}: any must be an array of Filters`,
     );
   } else {
-    filter.any.every((value: any, index: number) =>
-      assertFilter(value, pointer.concat(`[${index}]`)),
-    );
+    filter.any.forEach((value: any, index: number) => {
+      assertFilter(value, pointer.concat(`[${index}]`));
+    });
   }
 }
 
@@ -431,14 +431,14 @@ function assertRangeFilter(
       `${pointer.join('/') || '/'}: range must be an object`,
     );
   }
-  Object.entries(filter.range).every(([fieldPath, constraints]) => {
+  Object.entries(filter.range).forEach(([fieldPath, constraints]) => {
     let innerPointer = [...pointer, fieldPath];
     if (typeof constraints !== 'object' || constraints == null) {
       throw new InvalidQueryError(
         `${innerPointer.join('/') || '/'}: range constraint must be an object`,
       );
     }
-    Object.entries(constraints).every(([key, value]) => {
+    Object.entries(constraints).forEach(([key, value]) => {
       switch (key) {
         case 'gt':
         case 'gte':

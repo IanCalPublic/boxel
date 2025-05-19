@@ -1,7 +1,11 @@
 import qs from 'qs';
 import { module, test } from 'qunit';
 
-import { parseQuery, Query } from '@cardstack/runtime-common/query';
+import {
+  parseQuery,
+  Query,
+  assertQuery,
+} from '@cardstack/runtime-common/query';
 
 module('Unit | qs | parse', function () {
   test('parseQuery errors out if the query is too deep', async function (assert) {
@@ -53,5 +57,26 @@ module('Unit | qs | parse', function () {
     });
     let parsedQuery: any = parseQuery(queryString);
     assert.deepEqual(parsedQuery, query);
+  });
+
+  test('assertQuery checks all items in every filter', async function (assert) {
+    let queryString =
+      'filter[every][0][eq][name]=Mango&filter[every][1]=not-a-filter';
+    let query = parseQuery(queryString);
+    assert.throws(
+      () => assertQuery(query),
+      /missing filter object/,
+      'invalid filter entry triggers error',
+    );
+  });
+
+  test('assertQuery validates range filter keys', async function (assert) {
+    let queryString = 'filter[range][age][gt]=10&filter[range][age][foo]=20';
+    let query = parseQuery(queryString);
+    assert.throws(
+      () => assertQuery(query),
+      /range item must be gt, gte, lt, or lte/,
+      'invalid range key triggers error',
+    );
   });
 });
