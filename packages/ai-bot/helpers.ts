@@ -650,6 +650,7 @@ export async function getModifyPrompt(
   ) {
     throw new Error("Username must be a full id, e.g. '@ai-bot:localhost'");
   }
+  let currentDateTime = new Date().toISOString();
   let historicalMessages: OpenAIPromptMessage[] = [];
   for (let event of history) {
     if (event.type !== 'm.room.message') {
@@ -698,10 +699,10 @@ export async function getModifyPrompt(
         body = `User message: ${body}
           Context: the user has the following cards open: ${JSON.stringify(
             event.content.data.context.openCardIds,
-          )}`;
+          )}. Current date and time: ${currentDateTime}`;
       } else {
         body = `User message: ${body}
-          Context: the user has no open cards.`;
+          Context: the user has no open cards. Current date and time: ${currentDateTime}`;
       }
       historicalMessages.push({
         role: 'user',

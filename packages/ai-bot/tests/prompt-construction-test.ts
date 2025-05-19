@@ -122,9 +122,10 @@ module('getModifyPrompt', (hooks) => {
     assert.equal(result.length, 2);
     assert.equal(result[0].role, 'system');
     assert.equal(result[1].role, 'user');
-    assert.equal(
-      result[1].content,
-      'User message: Hey\n          Context: the user has no open cards.',
+    assert.ok(
+      result[1].content?.startsWith(
+        'User message: Hey\n          Context: the user has no open cards. Current date and time:',
+      ),
     );
   });
 
