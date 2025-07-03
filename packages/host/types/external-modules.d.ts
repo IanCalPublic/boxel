@@ -24,6 +24,14 @@ declare module 'safe-stable-stringify' {
 declare module 'tracked-built-ins' {
     export class TrackedMap<K, V> extends Map<K, V> { }
     export class TrackedArray<T> extends Array<T> { }
+    /**
+     * Minimal polyfill for the `@glimmer/tracking`‐powered TrackedObject used by
+     * Boxel. It behaves like a POJO but notifies Glimmer of changes.
+     */
+    export class TrackedObject<T extends object = Record<string, unknown>> {
+        constructor(initial?: T);
+        [key: string]: any;
+    }
 }
 
 declare module '@sentry/node' {
@@ -72,4 +80,29 @@ declare module 'openai/resources/chat/completions' {
             arguments: string;
         };
     }
+}
+
+// Generic fallbacks for any untyped Ember module that might leak through
+declare module '@ember/*' {
+    const value: any;
+    export default value;
+    export = value;
+}
+
+declare module '@glimmer/*' {
+    const value: any;
+    export default value;
+    export = value;
+}
+
+// Allow importing runtime-common helpers directly from packages without type errors
+declare module '@cardstack/runtime-common/*' {
+    const mod: any;
+    export = mod;
+}
+
+// Fallback for in-repo bare specifiers that might escape type checking
+declare module '@cardstack/host/*' {
+    const mod: any;
+    export = mod;
 }
