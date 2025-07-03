@@ -334,7 +334,11 @@ export function getRelevantCards(
             ? (JSON.parse(attachedCard.content) as LooseSingleCardDocument)
             : undefined,
         )
-        .filter((card) => card !== undefined);
+        .filter(
+          (
+            card,
+          ): card is LooseSingleCardDocument => card !== undefined,
+        );
       if (content.msgtype === APP_BOXEL_MESSAGE_MSGTYPE && attachedCards) {
         setRelevantCards(attachedCardMap, attachedCards);
         mostRecentlyAttachedCard = getMostRecentlyAttachedCard(attachedCards);
@@ -343,7 +347,7 @@ export function getRelevantCards(
   }
   // Return the cards in a consistent manner
   let sortedCards = Array.from(attachedCardMap.values())
-    .filter((card) => card.id) // Only include cards with valid IDs
+    .filter((card): card is CardResource => Boolean(card && card.id)) // Only include cards with valid IDs
     .sort((a, b) => String(a.id!).localeCompare(String(b.id!)));
 
   return {
@@ -369,7 +373,11 @@ export function hasSomeAttachedCards(
             ? (JSON.parse(attachedCard.content) as LooseSingleCardDocument)
             : undefined,
         )
-        .filter((card) => card !== undefined);
+        .filter(
+          (
+            card,
+          ): card is LooseSingleCardDocument => card !== undefined,
+        );
       if (attachedCards?.length) {
         return true;
       }
@@ -429,7 +437,11 @@ export async function getAttachedCards(
   );
   results =
     results
-      ?.filter((cardFileDef) => cardFileDef?.url) // Only include cards with valid urls
+      ?.filter(
+        (
+          cardFileDef,
+        ): cardFileDef is SerializedFileDef => Boolean(cardFileDef?.url),
+      ) // Only include cards with valid urls
       ?.sort((a, b) => String(a!.url!).localeCompare(String(b!.url!))) ?? [];
   return results;
 }

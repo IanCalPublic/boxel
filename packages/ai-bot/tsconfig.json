@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2023",
-    "lib": ["es2023", "dom"],
+    "lib": [
+      "es2023",
+      "dom"
+    ],
     "allowJs": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -25,18 +28,45 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "https://cardstack.com/base/*": ["../base/*"],
-      "@cardstack/boxel-ui": ["../boxel-ui/addon"],
-      "@cardstack/boxel-ui/*": ["../boxel-ui/addon/*"],
-      "*": ["types/*"]
+      "https://cardstack.com/base/*": [
+        "../base/*"
+      ],
+      "@cardstack/boxel-ui": [
+        "../boxel-ui/addon"
+      ],
+      "@cardstack/boxel-ui/*": [
+        "../boxel-ui/addon/*"
+      ],
+      "@cardstack/runtime-common": [
+        "../runtime-common"
+      ],
+      "@cardstack/runtime-common/*": [
+        "../runtime-common/*"
+      ],
+      "*": [
+        "types/*"
+      ]
     }
   },
   "glint": {
-    "environment": ["ember-loose", "ember-template-imports"],
+    "environment": [
+      "ember-loose",
+      "ember-template-imports"
+    ],
     "transform": {
-      "include": ["../base/**", "./**", "../boxel-ui/addon/**"]
+      "include": [
+        "../base/**",
+        "./**",
+        "../boxel-ui/addon/**"
+      ]
     }
   },
-  "include": ["../base/**/*", "./**/*", "../runtime-common/types/*"],
-  "exclude": ["../base/**/__boxel/**"]
+  "include": [
+    "../base/**/*",
+    "./**/*",
+    "../runtime-common/types/*"
+  ],
+  "exclude": [
+    "../base/**/__boxel/**"
+  ]
 }

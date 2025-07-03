@@ -23,16 +23,37 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "paths": {
-      "@cardstack/host/tests/*": ["tests/*"],
-      "@cardstack/host/*": ["app/*"],
-      "@cardstack/boxel-host/commands/*": ["app/commands/*"],
-      "https://cardstack.com/base/*": ["../base/*"],
-      "@cardstack/catalog/*": ["../catalog-realm/catalog-app/*"],
-      "*": ["types/*"]
+      "@cardstack/host/tests/*": [
+        "tests/*"
+      ],
+      "@cardstack/host/*": [
+        "app/*"
+      ],
+      "@cardstack/boxel-host/commands/*": [
+        "app/commands/*"
+      ],
+      "https://cardstack.com/base/*": [
+        "../base/*"
+      ],
+      "@cardstack/catalog/*": [
+        "../catalog-realm/catalog-app/*"
+      ],
+      "@cardstack/runtime-common": [
+        "../runtime-common"
+      ],
+      "@cardstack/runtime-common/*": [
+        "../runtime-common/*"
+      ],
+      "*": [
+        "types/*"
+      ]
     }
   },
   "glint": {
-    "environment": ["ember-loose", "ember-template-imports"],
+    "environment": [
+      "ember-loose",
+      "ember-template-imports"
+    ],
     "transform": {
       "include": [
         "../experiments-realm/**",
@@ -52,5 +73,7 @@
     "tests/**/*",
     "types/**/*"
   ],
-  "exclude": ["../base/**/__boxel/**"]
+  "exclude": [
+    "../base/**/__boxel/**"
+  ]
 }
