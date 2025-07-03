@@ -214,6 +214,7 @@ declare module '@cardstack/runtime-common/matrix-constants' {
     export const SLIDING_SYNC_AI_ROOM_LIST_NAME: string;
     export const SLIDING_SYNC_LIST_TIMELINE_LIMIT: number;
     export const SLIDING_SYNC_TIMEOUT: number;
+    export const DEFAULT_LLM: string;
 }
 
 /* ------------------------------------------------------------------
@@ -277,6 +278,19 @@ declare module 'https://cardstack.com/base/matrix-event' {
             selectedText?: string;
         };
         debug?: boolean;
+    }
+
+    /* Union helper used throughout host/bot for events that include context */
+    export type MatrixEventWithBoxelContext = CardMessageEvent | CommandResultEvent | CodePatchResultEvent;
+
+    /* Room skills configuration event */
+    export interface SkillsConfigEvent extends MatrixEvent {
+        type: 'app.boxel.room.skills';
+        content: {
+            enabledSkillCards: any[];
+            disabledSkillCards: any[];
+            commandDefinitions?: any[];
+        };
     }
 
     export { MatrixEvent as DiscreteMatrixEvent };
@@ -365,6 +379,7 @@ declare module 'https://cardstack.com/base/card-api' {
         static embedded?: any;
         static fitted?: any;
         static edit?: any;
+        id?: string;
     }
     export class FieldDef { }
     export class Component<T = any> { }
@@ -395,4 +410,34 @@ declare module 'https://cardstack.com/base/skill' {
         meta?: any;
     }
     export interface CommandField { }
+}
+
+declare module '@cardstack/runtime-common' {
+    export function skillCardRef(fileURL: string): string;
+}
+
+/* ------------------------------------------------------------------
+ * Sentry – ensure captureException available (already declared but complete)
+ * ------------------------------------------------------------------ */
+declare module '@sentry/node' {
+    export function captureException(error: unknown, context?: unknown): void;
+    export function captureMessage(message: string, level?: string): void;
+    export function init(opts: unknown): void;
+}
+
+/* ------------------------------------------------------------------
+ * Node built-in minimal typings (fs, path, url) to avoid @types/node dep
+ * ------------------------------------------------------------------ */
+declare module 'path' {
+    export function join(...paths: string[]): string;
+    export function resolve(...paths: string[]): string;
+    export const sep: string;
+}
+
+declare module 'url' {
+    export class URL {
+        constructor(url: string, base?: string | URL);
+        href: string;
+        toString(): string;
+    }
 }
