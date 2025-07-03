@@ -182,3 +182,73 @@ declare module 'https://cardstack.com/base/*' {
     const value: any;
     export = value;
 }
+
+/* ------------------------------------------------------------------
+ * Sentry (error tracking) minimal shim
+ * ------------------------------------------------------------------ */
+declare module '@sentry/node' {
+    export function captureException(error: any, context?: any): void;
+    export function init(options?: any): void;
+    const Sentry: any;
+    export default Sentry;
+}
+
+/* ------------------------------------------------------------------
+ * Node helpers used only in tests/build scripts
+ * ------------------------------------------------------------------ */
+declare module 'fs-extra' {
+    type PathLike = string;
+    // Minimal Buffer alias for our usage
+    type Buffer = any;
+    export function readFileSync(path: PathLike | number, options?: any): string | Buffer;
+}
+
+declare module 'path' {
+    export function join(...paths: string[]): string;
+    export function resolve(...paths: string[]): string;
+    export const sep: string;
+}
+
+/* ------------------------------------------------------------------
+ * Cardstack base modules – expose minimal APIs needed by code/tests
+ * ------------------------------------------------------------------ */
+
+declare module 'https://cardstack.com/base/card-api' {
+    export class CardDef<T = any> {
+        constructor(attrs?: any);
+        static displayName?: string;
+        static isolated?: any;
+        static embedded?: any;
+        static fitted?: any;
+        static edit?: any;
+    }
+    export class FieldDef { }
+    export class Component<T = any> { }
+
+    // Helper decorators – no-op typings
+    export function field(...args: any[]): any;
+    export function contains(type: any, opts?: any): any;
+    export function linksTo(type: any): any;
+    export function linksToMany(type: any): any;
+    export function serialize(value: any): any;
+}
+
+declare module 'https://cardstack.com/base/file-api' {
+    export interface SerializedFile {
+        url: string;
+        sourceUrl?: string;
+        name: string;
+        contentType: string;
+        content?: string;
+        error?: string;
+    }
+    export type SerializedFileDef = SerializedFile;
+}
+
+declare module 'https://cardstack.com/base/skill' {
+    export interface Skill {
+        attributes?: any;
+        meta?: any;
+    }
+    export interface CommandField { }
+}
