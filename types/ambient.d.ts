@@ -156,6 +156,23 @@ declare module '@cardstack/runtime-common' {
         reject(reason?: unknown): void;
     }
     export function getMatrixUsername(userId: string): string;
+
+    /* Additional data structures used throughout the code-base */
+    export interface LooseSingleCardDocument {
+        data: LooseCardResource;
+    }
+    export interface CardResource {
+        id?: string;
+        type?: string;
+        attributes?: Record<string, unknown>;
+        relationships?: Record<string, unknown>;
+        meta?: Record<string, unknown>;
+    }
+
+    /* Marker constants used when eliding code patches */
+    export const SEARCH_MARKER: string;
+    export const SEPARATOR_MARKER: string;
+    export const REPLACE_MARKER: string;
 }
 
 /* ------------------------------------------------------------------
@@ -263,6 +280,23 @@ declare module 'https://cardstack.com/base/matrix-event' {
     }
 
     export { MatrixEvent as DiscreteMatrixEvent };
+
+    /* -----------------------
+     * Additional Event Types
+     * ----------------------- */
+    export interface ActiveLLMEvent extends MatrixEvent {
+        type: 'app.boxel.active-llm';
+        content: { model: string };
+    }
+
+    // Helper structure used when encoding command requests
+    export interface EncodedCommandRequest {
+        id: string;
+        name: string;
+        /** stringified JSON of the arguments */
+        arguments: string;
+        description?: string;
+    }
 }
 
 /* ------------------------------------------------------------------
@@ -282,6 +316,25 @@ declare module 'matrix-js-sdk' {
         Update = 'RoomState.events',
     }
     export interface RoomState { }
+
+    /** Generic matrix event wrapper */
+    export interface MatrixEvent {
+        getId(): string | undefined;
+        getType(): string | undefined;
+        getContent(): any;
+        getSender(): string | undefined;
+        roomId?: string;
+    }
+
+    /** Status enum for local echo events */
+    export enum EventStatus {
+        /** sent to the server */
+        SENT = 'sent',
+        /** not yet sent */
+        UNSENT = 'unsent',
+        /** sending failed */
+        NOT_SENT = 'not_sent',
+    }
 }
 
 /* Sliding-sync state enum stub */
