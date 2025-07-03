@@ -184,6 +184,10 @@ export interface BoxelContext {
       format: string;
     };
     selectedCodeRef?: CodeRef;
+    /**
+     * The raw text the user currently has selected in the code editor, if any.
+     */
+    selectedText?: string;
   };
   debug?: boolean;
   requireToolCall?: boolean;

@@ -122,6 +122,7 @@ module('buildPromptForModel', (hooks) => {
                   cardId: 'http://localhost:4201/experiments/Author/1',
                   format: 'isolated',
                 },
+                selectedText: 'console.log("hello")',
               },
             },
           },
@@ -162,6 +163,7 @@ File open in code editor: http://localhost:4201/experiments/Author/1
 Module inspector panel: preview
 Viewing card instance: http://localhost:4201/experiments/Author/1
 In format: isolated
+Selected text: console.log("hello")
 
 Current date and time: 2025-06-11T11:43:00.533Z
 `,
@@ -1456,7 +1458,7 @@ Attached Files (files with newer versions don't show their content):
     assert.ok(
       userContextMessage?.content?.includes(nonEditableCardsMessage),
       'System context message should include the "unable to edit cards" message when there are attached cards and no tools, and no attached files, but was ' +
-        userContextMessage?.content,
+      userContextMessage?.content,
     );
 
     // Now add a tool
@@ -2430,10 +2432,7 @@ Attached Files (files with newer versions don't show their content):
   test('Tools can be required to be called if done so in the last message', async () => {
     const eventList: DiscreteMatrixEvent[] = JSON.parse(
       readFileSync(
-        path.join(
-          __dirname,
-          'resources/chats/required-tool-call-in-last-message.json',
-        ),
+        path.join(__dirname, 'resources/chats/required-tool-call-in-last-message.json'),
         'utf-8',
       ),
     );
@@ -2504,10 +2503,7 @@ Attached Files (files with newer versions don't show their content):
   test('Responds to completion of lone tool call even when there is no result card', async function () {
     const eventList: DiscreteMatrixEvent[] = JSON.parse(
       readFileSync(
-        path.join(
-          __dirname,
-          'resources/chats/invoke-submode-swith-command.json',
-        ),
+        path.join(__dirname, 'resources/chats/invoke-submode-swith-command.json'),
         'utf-8',
       ),
     );
@@ -3070,13 +3066,13 @@ Attached Files (files with newer versions don't show their content):
     assert.equal(
       messages![2].content,
       'Updating the file...\n' +
-        'http://test.com/spaghetti-recipe.gts\n' +
-        '[Omitting previously suggested and applied code change]\n' +
-        '\n' +
-        'I will also create a file for rigatoni:\n' +
-        '\n' +
-        'http://test.com/rigatoni-recipe.gts\n' +
-        '[Omitting previously suggested code change that failed to apply]\n',
+      'http://test.com/spaghetti-recipe.gts\n' +
+      '[Omitting previously suggested and applied code change]\n' +
+      '\n' +
+      'I will also create a file for rigatoni:\n' +
+      '\n' +
+      'http://test.com/rigatoni-recipe.gts\n' +
+      '[Omitting previously suggested code change that failed to apply]\n',
     );
   });
 
@@ -3508,7 +3504,7 @@ Attached Files (files with newer versions don't show their content):
         /Current date and time: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       ),
       'Context message should contain the current date and time but was ' +
-        messages![3].content,
+      messages![3].content,
     );
   });
 

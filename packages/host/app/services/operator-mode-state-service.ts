@@ -582,9 +582,8 @@ export default class OperatorModeStateService extends Service {
   @cached
   get title() {
     if (this._state.submode === Submodes.Code) {
-      return `${this.codePathRelativeToRealm} in ${
-        this.realm.info(this.realmURL.href).name
-      }`;
+      return `${this.codePathRelativeToRealm} in ${this.realm.info(this.realmURL.href).name
+        }`;
     } else {
       let itemForTitle = this.topMostStackItems().pop(); // top-most card of right stack
       return (
@@ -841,7 +840,7 @@ export default class OperatorModeStateService extends Service {
       if (stack) {
         let cardId =
           stack[0]?.id &&
-          this.realmServer.availableRealmIndexCardIds.includes(stack[0]?.id)
+            this.realmServer.availableRealmIndexCardIds.includes(stack[0]?.id)
             ? stack[0].id
             : stack[stack.length - 1]?.id;
         if (cardId) {
@@ -1027,11 +1026,14 @@ export default class OperatorModeStateService extends Service {
         codeMode.moduleInspectorPanel = this.moduleInspectorPanel;
         codeMode.previewPanelSelection = this.playgroundPanelSelection
           ? {
-              cardId: this.playgroundPanelSelection.cardId,
-              format: this.playgroundPanelSelection.format,
-            }
+            cardId: this.playgroundPanelSelection.cardId,
+            format: this.playgroundPanelSelection.format,
+          }
           : undefined;
         codeMode.selectedCodeRef = this.codeSemanticsService.selectedCodeRef;
+        if (this._state.codeSelection) {
+          codeMode.selectedText = this._state.codeSelection;
+        }
       }
     }
 
