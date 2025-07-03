@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es2020",
     "allowJs": true,
-    "module": "es2022",
-    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "noImplicitThis": true,

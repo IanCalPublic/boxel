@@ -476,6 +476,7 @@ declare global {
         interface Global { }
     }
     type JsonObject = { [key: string]: unknown };
+    const global: NodeJS.Global & typeof globalThis;
 }
 
 /* ------------------------------------------------------------------
