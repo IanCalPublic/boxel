@@ -731,7 +731,15 @@ export default class MatrixService extends Service {
             (fileDef) => fileDef.sourceUrl === cmd.sourceUrl,
           );
           if (matchingFileDef) {
-            return { ...cmd, url: matchingFileDef.url };
+            // When the command definition has changed we need to refresh both the
+            // url and the associated contentHash so that clients can reliably
+            // verify that the file contents they download are the ones they
+            // expect.
+            return {
+              ...cmd,
+              url: matchingFileDef.url,
+              contentHash: matchingFileDef.contentHash,
+            };
           }
           return cmd;
         });
@@ -847,8 +855,7 @@ export default class MatrixService extends Service {
       );
     } catch (e) {
       throw new Error(
-        `Error sending command result event: ${
-          'message' in (e as Error) ? (e as Error).message : e
+        `Error sending command result event: ${'message' in (e as Error) ? (e as Error).message : e
         }`,
       );
     }
@@ -886,8 +893,7 @@ export default class MatrixService extends Service {
       );
     } catch (e) {
       throw new Error(
-        `Error sending code patch result event: ${
-          'message' in (e as Error) ? (e as Error).message : e
+        `Error sending code patch result event: ${'message' in (e as Error) ? (e as Error).message : e
         }`,
       );
     }
