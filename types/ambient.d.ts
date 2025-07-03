@@ -101,112 +101,145 @@ declare module 'tracked-built-ins' {
 }
 
 /* ------------------------------------------------------------------
- * Cardstack runtime and helpers (lightweight shims)
+ * Cardstack runtime-common modules
  * ------------------------------------------------------------------ */
+
 declare module '@cardstack/runtime-common' {
-    export const logger: any;
+    export const logger: (ns?: string) => (...args: any[]) => void;
     export const aiBotUsername: string;
+
+    /** Default LLM model id */
     export const DEFAULT_LLM: string;
+
+    // Matrix helpers
     export const APP_BOXEL_STOP_GENERATING_EVENT_TYPE: string;
+    // Many other constants are re-exported from matrix-constants, we don't repeat them here.
 }
 
-declare module '@cardstack/runtime-common/*' {
-    const value: any;
-    export = value;
+declare module '@cardstack/runtime-common/helpers/ai' {
+    /** Used to indicate to the LLM which tool to call. */
+    export type ToolChoice = 'auto' | { name: string };
+    export function getPatchTool(...args: any[]): any;
 }
 
-declare module '@cardstack/postgres' {
-    export class PgAdapter { }
+declare module '@cardstack/runtime-common/matrix-constants' {
+    // Expose only the constants referenced inside ai-bot & host packages.
+    export const APP_BOXEL_MESSAGE_MSGTYPE: string;
+    export const APP_BOXEL_COMMAND_REQUESTS_KEY: string;
+    export const APP_BOXEL_COMMAND_RESULT_EVENT_TYPE: string;
+    export const APP_BOXEL_COMMAND_RESULT_WITH_OUTPUT_MSGTYPE: string;
+    export const APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE: string;
+    export const APP_BOXEL_COMMAND_RESULT_REL_TYPE: string;
+    export const APP_BOXEL_CODE_PATCH_RESULT_EVENT_TYPE: string;
+    export const APP_BOXEL_CODE_PATCH_RESULT_MSGTYPE: string;
+    export const APP_BOXEL_CODE_PATCH_RESULT_REL_TYPE: string;
+    export const APP_BOXEL_ROOM_SKILLS_EVENT_TYPE: string;
+    export const APP_BOXEL_STOP_GENERATING_EVENT_TYPE: string;
+    export const APP_BOXEL_ACTIVE_LLM: string;
+    export const SLIDING_SYNC_AI_ROOM_LIST_NAME: string;
+    export const SLIDING_SYNC_LIST_TIMELINE_LIMIT: number;
+    export const SLIDING_SYNC_TIMEOUT: number;
 }
 
 /* ------------------------------------------------------------------
- * Matrix SDK minimal shims
+ * Cardstack matrix-event definitions (greatly simplified)
  * ------------------------------------------------------------------ */
+
+declare module 'https://cardstack.com/base/matrix-event' {
+    import type { ToolChoice } from '@cardstack/runtime-common/helpers/ai';
+
+    // A very loose representation; code mainly treats these as `any`.
+    export interface MatrixEvent {
+        type: string;
+        sender: string;
+        room_id: string;
+        event_id: string;
+        origin_server_ts: number;
+        content: any;
+    }
+
+    export interface CardMessageEvent extends MatrixEvent {
+        type: 'm.room.message';
+        content: CardMessageContent;
+    }
+
+    export interface CommandResultEvent extends MatrixEvent { }
+    export interface CodePatchResultEvent extends MatrixEvent { }
+
+    export interface CardMessageContent {
+        msgtype: string;
+        format: string;
+        body: string;
+        data?: {
+            context?: BoxelContext;
+            attachedCards?: any[];
+            attachedFiles?: any[];
+        };
+        [key: string]: any;
+    }
+
+    export interface Tool {
+        type: 'function';
+        function: {
+            name: string;
+            description: string;
+            parameters: any;
+        };
+    }
+
+    export interface BoxelContext {
+        agentId?: string;
+        submode?: string;
+        realmUrl?: string;
+        openCardIds?: string[];
+        tools?: Tool[];
+        toolChoice?: ToolChoice;
+        codeMode?: {
+            currentFile?: string;
+            moduleInspectorPanel?: string;
+            previewPanelSelection?: { cardId: string; format: string };
+            selectedCodeRef?: any;
+            selectedText?: string;
+        };
+        debug?: boolean;
+    }
+
+    export { MatrixEvent as DiscreteMatrixEvent };
+}
+
+/* ------------------------------------------------------------------
+ * matrix-js-sdk – extend previous minimal shim
+ * ------------------------------------------------------------------ */
+
 declare module 'matrix-js-sdk' {
-    export enum EventStatus {
-        SENT,
+    // Event enums already stubbed; add RoomEvent & RoomMemberEvent names used via dot-access on the SDK.
+    export enum RoomEvent {
+        Timeline = 'Room.timeline',
+        LocalEchoUpdated = 'Room.localEchoUpdated',
     }
-    export type MatrixEvent = any;
-    export interface RoomMember { }
-    export interface Filter {
-        setDefinition(def: any): void;
+    export enum RoomMemberEvent {
+        Membership = 'RoomMember.membership',
     }
-    export interface ClientEvent {
-        AccountData: string;
+    export enum RoomStateEvent {
+        Update = 'RoomState.events',
     }
-    export const Filter: {
-        new(userId: string, name: string): Filter;
-    };
-    export function createClient(opts: any): any;
+    export interface RoomState { }
 }
 
+/* Sliding-sync state enum stub */
 declare module 'matrix-js-sdk/lib/sliding-sync' {
-    export enum SlidingSyncState { }
-    export type MSC3575List = any;
-    export class SlidingSync {
-        constructor(baseUrl: string, lists: any, opts: any, client: any, timeout: number);
+    export enum SlidingSyncEvent {
+        State = 'state',
     }
 }
 
 /* ------------------------------------------------------------------
- * OpenAI client minimal shims
+ * OpenAI – extend completions types
  * ------------------------------------------------------------------ */
-declare module 'openai' {
-    export default class OpenAI {
-        constructor(opts: any);
-        beta: any;
-    }
-}
-
-declare module 'openai/error' {
-    export class OpenAIError extends Error { }
-    export default OpenAIError;
-}
 
 declare module 'openai/resources/chat/completions' {
+    export type ChatCompletionMessageParam = any;
     export type ChatCompletionMessageToolCall = any;
-}
-
-declare module 'openai/lib/ChatCompletionStream.mjs' {
-    export class ChatCompletionStream {
-        on(event: string, handler: any): ChatCompletionStream;
-        abort(): void;
-        finalChatCompletion(): Promise<void>;
-    }
-}
-
-/* ------------------------------------------------------------------
- * URL-based cardstack imports (wildcard)
- * ------------------------------------------------------------------ */
-declare module 'https://cardstack.com/base/*' {
-    const value: any;
-    export = value;
-}
-
-/* ------------------------------------------------------------------
- * Sentry (error tracking) minimal shim
- * ------------------------------------------------------------------ */
-declare module '@sentry/node' {
-    export function captureException(error: any, context?: any): void;
-    export function init(options?: any): void;
-    const Sentry: any;
-    export default Sentry;
-}
-
-/* ------------------------------------------------------------------
- * Node helpers used only in tests/build scripts
- * ------------------------------------------------------------------ */
-declare module 'fs-extra' {
-    type PathLike = string;
-    // Minimal Buffer alias for our usage
-    type Buffer = any;
-    export function readFileSync(path: PathLike | number, options?: any): string | Buffer;
-}
-
-declare module 'path' {
-    export function join(...paths: string[]): string;
-    export function resolve(...paths: string[]): string;
-    export const sep: string;
 }
 
 /* ------------------------------------------------------------------
