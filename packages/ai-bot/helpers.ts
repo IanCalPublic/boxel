@@ -1028,7 +1028,9 @@ export const attachedCardsToMessage = (
 };
 
 export const skillCardsToMessage = (cards: LooseCardResource[]) => {
-  return cards.map((card) => card.attributes?.instructions).join('\n');
+  return cards
+    .map((card: LooseCardResource) => card.attributes?.instructions)
+    .join('\n');
 };
 
 export function cleanContent(content: string) {
