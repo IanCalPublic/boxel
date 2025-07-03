@@ -39,11 +39,17 @@ declare module 'qunit' {
  * ------------------------------------------------------------------ */
 declare module '@ember/application' {
     /**
-     * Retrieves the Ember owner (dependency-injection container) for a given
-     * context. We return `any` here because callers typically rely on dynamic
-     * lookups.
+     * DI container/owner interface – we only model the lookup method used in
+     * tests and code for service retrieval.
      */
-    export function getOwner(context: unknown): any;
+    export interface Owner {
+        lookup(name: string): any;
+    }
+
+    /**
+     * Utility to fetch the owner from an Ember object (component/service etc.)
+     */
+    export function getOwner(context: unknown): Owner;
 }
 
 /* ------------------------------------------------------------------
