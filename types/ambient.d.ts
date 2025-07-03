@@ -12,9 +12,24 @@ declare module 'qunit' {
      * Registers a test module. We model the signature loosely to cover the
      * common usages in the code-base (name and hooks object).
      */
+    /** Shape of the hooks object used within module callbacks */
+    export interface TestHooks {
+        beforeEach?: (assert: any) => void | Promise<void>;
+        afterEach?: (assert: any) => void | Promise<void>;
+        [key: string]: unknown;
+    }
+
+    // overload: (name, callback)
     export function module(
         name: string,
-        callback: (hooks: Record<string, unknown>) => void,
+        callback: (hooks: TestHooks) => void,
+    ): void;
+
+    // overload: (name, hooksObject, callback)
+    export function module(
+        name: string,
+        hooks: TestHooks,
+        callback: (hooks: TestHooks) => void,
     ): void;
 
     /**
@@ -232,6 +247,8 @@ declare module 'https://cardstack.com/base/matrix-event' {
         origin_server_ts: number;
         content: any;
         unsigned?: Record<string, unknown>;
+        /** local echo status during client send */
+        status?: import('matrix-js-sdk').EventStatus | string;
     }
 
     export interface CardMessageEvent extends MatrixEvent {
@@ -446,6 +463,9 @@ declare module 'url' {
  * Global NodeJS namespace additions (Buffer)
  * ------------------------------------------------------------------ */
 
-declare namespace NodeJS {
-    interface Global { }
+declare global {
+    namespace NodeJS {
+        interface Global { }
+    }
+    type JsonObject = { [key: string]: unknown };
 }
