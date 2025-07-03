@@ -60,50 +60,102 @@ declare module '@ember/owner' {
 }
 
 declare module '@ember/routing/router-service' {
+    /** Minimal RouterService API used in the code-base */
     export default class RouterService {
-        transitionTo(...args: any[]): void;
-        replaceWith(...args: any[]): void;
+        transitionTo(...args: unknown[]): void;
+        replaceWith(...args: unknown[]): void;
         refresh(): void;
+        currentURL: string;
     }
 }
 
 declare module '@ember/runloop' {
-    export function scheduleOnce(queue: string, target: any, method: any, ...args: any[]): void;
-    export function debounce(target: any, method: any, wait: number): void;
+    /**
+     * Schedule a one-off function to run in a specific queue.
+     */
+    function scheduleOnce(
+        queue: string,
+        target: unknown,
+        method: ((...args: unknown[]) => unknown) | string,
+        ...args: unknown[]
+    ): void;
+
+    /**
+     * Debounce calls to a method.
+     */
+    function debounce(
+        target: unknown,
+        method: ((...args: unknown[]) => unknown) | string,
+        wait: number,
+    ): void;
 }
 
 declare module '@ember/service' {
+    /** Base class for Ember service singletons */
     export default class Service { }
-    export function service(name?: string): any;
+    /** Decorator factory */
+    export function service(name?: string): PropertyDecorator;
 }
 
 declare module '@glimmer/tracking' {
-    export function tracked(target: any, key: string): any;
-    export function cached(target: any, key: string, descriptor: PropertyDescriptor): any;
+    /** Makes a property observable for autotracking. */
+    export function tracked(target: object, key: string | symbol, descriptor?: PropertyDescriptor): void;
+    /** Memoizes the result of a getter until tracked dependencies change. */
+    export function cached(target: object, key: string | symbol, descriptor: PropertyDescriptor): void;
 }
 
 declare module 'ember-concurrency' {
-    export function task(generator: any): any;
-    export function restartableTask(generator: any): any;
-    export function dropTask(generator: any): any;
+    export function task(generatorFunc: (...args: unknown[]) => unknown): any;
+    export function restartableTask(generatorFunc: (...args: unknown[]) => unknown): any;
+    export function dropTask(generatorFunc: (...args: unknown[]) => unknown): any;
     export function timeout(ms: number): Promise<void>;
 }
 
 declare module 'ember-window-mock' {
-    const windowMock: any;
+    const windowMock: Window & typeof globalThis;
     export default windowMock;
 }
 
 declare module 'safe-stable-stringify' {
-    export default function stringify(value: any): string;
+    export default function stringify(value: unknown): string;
 }
 
 declare module 'tracked-built-ins' {
     export class TrackedMap<K, V> extends Map<K, V> { }
     export class TrackedArray<T> extends Array<T> { }
-    export class TrackedObject<T = Record<string, any>> {
-        [key: string]: any;
+    export class TrackedObject<T extends Record<string, unknown> = Record<string, unknown>> {
+        [key: string]: unknown;
     }
+}
+
+/* ------------------------------------------------------------------
+ * Node utility stubs – fs-extra & path (already declared) augment Buffer
+ * ------------------------------------------------------------------ */
+declare module 'fs-extra' {
+    type PathLike = string;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    interface Buffer extends Uint8Array { readonly buffer: ArrayBufferLike }
+    export function readFileSync(path: PathLike | number, options?: any): string | Buffer;
+}
+
+/* ------------------------------------------------------------------
+ * Cardstack runtime-common additional symbols
+ * ------------------------------------------------------------------ */
+declare module '@cardstack/runtime-common' {
+    export interface RealmPaths {
+        new(url: URL): RealmPaths;
+        local(path: URL): string;
+        inRealm(path: URL): boolean;
+    }
+    export const baseRealm: { url: string };
+    export type LooseCardResource = any;
+    export type ResolvedCodeRef = { module: string; name: string };
+    export class Deferred<T = unknown> {
+        promise: Promise<T>;
+        fulfill(value: T | PromiseLike<T>): void;
+        reject(reason?: unknown): void;
+    }
+    export function getMatrixUsername(userId: string): string;
 }
 
 /* ------------------------------------------------------------------
