@@ -96,10 +96,9 @@ declare module '@glimmer/*' {
 }
 
 // Allow importing runtime-common helpers directly from packages without type errors
-declare module '@cardstack/runtime-common/*' {
-    const mod: any;
-    export = mod;
-}
+// NOTE: We intentionally do not add ambient declarations for
+// `@cardstack/runtime-common` because the real package in the monorepo already
+// provides rich typings. Adding a wildcard here would mask those.
 
 // Fallback for in-repo bare specifiers that might escape type checking
 declare module '@cardstack/host/*' {
