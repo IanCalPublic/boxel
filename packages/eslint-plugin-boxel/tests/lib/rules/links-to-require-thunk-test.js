@@ -41,6 +41,21 @@ ruleTester.run('links-to-require-thunk', rule, {
         @field friends = linksToMany(() => CardA);
       }
     `,
+        // Reference to class defined earlier in file without thunk
+        `
+      class CardB extends CardDef {}
+
+      class CardA extends CardDef {
+        @field friend = linksTo(CardB);
+      }
+    `,
+        // Reference to imported class without thunk
+        `
+      import { CardB } from './somewhere';
+      class CardA extends CardDef {
+        @field friend = linksTo(CardB);
+      }
+    `,
     ],
 
     invalid: [
