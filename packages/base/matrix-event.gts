@@ -184,6 +184,12 @@ export interface BoxelContext {
       format: string;
     };
     selectedCodeRef?: CodeRef;
+    /**
+     * Raw text that the user currently has selected in the code editor (if any).
+     * This gives the language model more context about what part of the file the
+     * user is focusing on.
+     */
+    selectedText?: string;
   };
   debug?: boolean;
   requireToolCall?: boolean;

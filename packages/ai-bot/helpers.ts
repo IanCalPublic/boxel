@@ -137,21 +137,21 @@ type TextMessage = {
 
 export type PromptParts =
   | {
-      shouldRespond: true;
-      tools: Tool[];
-      messages: OpenAIPromptMessage[];
-      model: string;
-      history: DiscreteMatrixEvent[];
-      toolChoice: ToolChoice;
-    }
+    shouldRespond: true;
+    tools: Tool[];
+    messages: OpenAIPromptMessage[];
+    model: string;
+    history: DiscreteMatrixEvent[];
+    toolChoice: ToolChoice;
+  }
   | {
-      shouldRespond: false;
-      tools: undefined;
-      messages: undefined;
-      model: undefined;
-      history: undefined;
-      toolChoice: undefined;
-    };
+    shouldRespond: false;
+    tools: undefined;
+    messages: undefined;
+    model: undefined;
+    history: undefined;
+    toolChoice: undefined;
+  };
 
 export type Message = CommandMessage | TextMessage;
 
@@ -216,7 +216,7 @@ function getShouldRespond(history: DiscreteMatrixEvent[]): boolean {
 
   let commandRequests =
     (lastEventExcludingResults.content as CardMessageContent)[
-      APP_BOXEL_COMMAND_REQUESTS_KEY
+    APP_BOXEL_COMMAND_REQUESTS_KEY
     ] ?? [];
   let codePatchBlocks = extractCodePatchBlocks(
     (lastEventExcludingResults.content as CardMessageContent).body,
@@ -233,7 +233,7 @@ function getShouldRespond(history: DiscreteMatrixEvent[]): boolean {
           (event.content.msgtype ===
             APP_BOXEL_COMMAND_RESULT_WITH_OUTPUT_MSGTYPE ||
             event.content.msgtype ===
-              APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE) &&
+            APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE) &&
           event.content.commandRequestId === commandRequest.id
         );
       });
@@ -722,14 +722,14 @@ async function toResultMessages(
             (commandResult.content.msgtype ===
               APP_BOXEL_COMMAND_RESULT_WITH_OUTPUT_MSGTYPE ||
               commandResult.content.msgtype ===
-                APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE) &&
+              APP_BOXEL_COMMAND_RESULT_WITH_NO_OUTPUT_MSGTYPE) &&
             commandResult.content.commandRequestId === commandRequest.id,
         );
         if (commandResult) {
           let status = commandResult.content['m.relates_to']?.key;
           if (
             commandResult.content.msgtype ===
-              APP_BOXEL_COMMAND_RESULT_WITH_OUTPUT_MSGTYPE &&
+            APP_BOXEL_COMMAND_RESULT_WITH_OUTPUT_MSGTYPE &&
             commandResult.content.data.card
           ) {
             let cardContent =
@@ -986,6 +986,9 @@ export const buildContextMessage = async (
       result += `Viewing card instance: ${context.codeMode.previewPanelSelection.cardId}\n`;
       result += `In format: ${context.codeMode.previewPanelSelection.format}\n`;
     }
+    if (context?.codeMode?.selectedText) {
+      result += `Selected text: ${context.codeMode.selectedText}\n`;
+    }
   } else {
     result += `The user has no open cards.\n`;
   }
@@ -1014,8 +1017,8 @@ export const attachedCardsToMessage = (
   let a =
     mostRecentlyAttachedCard !== undefined
       ? `Most recently shared card: ${JSON.stringify(
-          mostRecentlyAttachedCard,
-        )}.\n`
+        mostRecentlyAttachedCard,
+      )}.\n`
       : ``;
   let b =
     attachedCards.length > 0
@@ -1075,7 +1078,7 @@ export function isCommandResultEvent(
   return (
     event.type === APP_BOXEL_COMMAND_RESULT_EVENT_TYPE &&
     event.content['m.relates_to']?.rel_type ===
-      APP_BOXEL_COMMAND_RESULT_REL_TYPE
+    APP_BOXEL_COMMAND_RESULT_REL_TYPE
   );
 }
 
@@ -1088,7 +1091,7 @@ export function isCodePatchResultEvent(
   return (
     event.type === APP_BOXEL_CODE_PATCH_RESULT_EVENT_TYPE &&
     event.content['m.relates_to']?.rel_type ===
-      APP_BOXEL_CODE_PATCH_RESULT_REL_TYPE
+    APP_BOXEL_CODE_PATCH_RESULT_REL_TYPE
   );
 }
 
