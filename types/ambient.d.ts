@@ -14,8 +14,7 @@ declare module 'qunit' {
      */
     export function module(
         name: string,
-        hooks?: Record<string, unknown>,
-        callback?: (hooks: Record<string, unknown>) => void,
+        callback: (hooks: Record<string, unknown>) => void,
     ): void;
 
     /**
@@ -232,6 +231,7 @@ declare module 'https://cardstack.com/base/matrix-event' {
         event_id: string;
         origin_server_ts: number;
         content: any;
+        unsigned?: Record<string, unknown>;
     }
 
     export interface CardMessageEvent extends MatrixEvent {
@@ -440,4 +440,12 @@ declare module 'url' {
         href: string;
         toString(): string;
     }
+}
+
+/* ------------------------------------------------------------------
+ * Global NodeJS namespace additions (Buffer)
+ * ------------------------------------------------------------------ */
+
+declare namespace NodeJS {
+    interface Global { }
 }
