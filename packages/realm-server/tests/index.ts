@@ -22,6 +22,7 @@ import './realm-endpoints/search-test';
 import './realm-endpoints/user-test';
 import './search-prerendered-test';
 import './server-endpoints-test';
+import './proxy-endpoint-test';
 import './types-endpoint-test';
 import './virtual-network-test';
 import './billing-test';

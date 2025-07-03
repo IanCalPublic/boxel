@@ -177,6 +177,13 @@ export async function sendResponseForForbiddenRequest(
   await sendResponseForError(ctxt, 401, 'Forbidden Request', message);
 }
 
+export async function sendResponseForPaymentRequired(
+  ctxt: Koa.Context,
+  message: string,
+) {
+  await sendResponseForError(ctxt, 402, 'Payment Required', message);
+}
+
 export async function sendResponseForSystemError(
   ctxt: Koa.Context,
   message: string,
