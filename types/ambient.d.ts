@@ -187,6 +187,15 @@ declare module '@cardstack/runtime-common' {
     export const SEARCH_MARKER: string;
     export const SEPARATOR_MARKER: string;
     export const REPLACE_MARKER: string;
+
+    /** Structured logger helper */
+    export function logger(namespace?: string): {
+        error: (...args: unknown[]) => void;
+        warn: (...args: unknown[]) => void;
+        info: (...args: unknown[]) => void;
+        debug?: (...args: unknown[]) => void;
+        log: (...args: unknown[]) => void;
+    };
 }
 
 /* ------------------------------------------------------------------
@@ -194,7 +203,6 @@ declare module '@cardstack/runtime-common' {
  * ------------------------------------------------------------------ */
 
 declare module '@cardstack/runtime-common' {
-    export const logger: (ns?: string) => (...args: any[]) => void;
     export const aiBotUsername: string;
 
     /** Default LLM model id */
@@ -468,4 +476,24 @@ declare global {
         interface Global { }
     }
     type JsonObject = { [key: string]: unknown };
+}
+
+/* ------------------------------------------------------------------
+ * Additional Ember shims
+ * ------------------------------------------------------------------ */
+
+declare module '@ember/component' {
+    /** Minimal Component class used mainly for generics in Card API */
+    export default class Component<T = unknown> {
+        constructor(owner?: unknown, args?: T);
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Global browser / node objects
+ * ------------------------------------------------------------------ */
+
+declare global {
+    interface Window { [key: string]: unknown; }
+    const window: Window & typeof globalThis;
 }
